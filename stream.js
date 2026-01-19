@@ -13,16 +13,16 @@ function host(peer){
             cvs.toBlob((b) => {
                 if(!lastBlob || lastBlob.size != b.size) {
                     conn.send(b);
-                    console.log("yes");
+                    //console.log("yes");
                 }
                 else {
-                    console.log("no");
+                    //console.log("no");
                 }
                 lastBlob = b;
             }, "image/png");
         }
 
-        setInterval(send_canvas, 1000 / 120);
+        setInterval(send_canvas, 1000 / 60);
 
         conn.on('data', function(data) {
             // Player 2 (index 1) gets the buttons.
