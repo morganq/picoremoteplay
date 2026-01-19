@@ -14,7 +14,7 @@
     
         // p8_autoplay true to boot the cartridge automatically after page load when possible
         // if the browser can not create an audio context outside of a user gesture (e.g. on iOS), p8_autoplay has no effect
-        var p8_autoplay = false;
+        var p8_autoplay = true;
     
         // When pico8_state is defined, PICO-8 will set .is_paused, .sound_volume and .frame_number each frame 
         // (used for determining button icons)
@@ -618,6 +618,7 @@
             // load and run script
             e = document.createElement("script");
             p8_script = e;
+            var rebooted = false;
             e.onload = function(){
                 
                 // show canvas / menu buttons only after loading
@@ -627,12 +628,11 @@
                 if (typeof(p8_update_layout_hash) !== 'undefined')
                     p8_update_layout_hash = -77;
                 if (typeof(p8_buttons_hash) !== 'undefined')
-                    p8_buttons_hash = -33;
-    
+                    p8_buttons_hash = -33;                    
     
             }
             e.type = "application/javascript";
-            e.src = "seadogs.js";
+            e.src = "pico-ball.js";
             e.id = "e_script";
             
             document.body.appendChild(e); // load and run
@@ -950,6 +950,10 @@
     
     <STYLE TYPE="text/css">
     <!--
+    body {
+        font-family:sans-serif;
+    }
+
     .p8_menu_button{
         opacity:0.3;
         padding:4px;
@@ -983,10 +987,14 @@
     
     .p8_start_button{
         cursor:pointer;
+        /*
         background:url("data:image/png;base64,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");
+        
         -repeat center;
         -webkit-background-size:cover; -moz-background-size:cover; -o-background-size:cover; background-size:cover;
+        
         image-rendering: pixelated;
+        */
     }
     
     .button_gfx{
@@ -1011,6 +1019,34 @@
         image-rendering: optimize-contrast;
         image-rendering: pixelated;
         -ms-interpolation-mode: nearest-neighbor;
+        width:100%;
+    }
+    #remoteplay_controls {
+        display:flex;
+        flex-direction: row;
+        margin:auto;
+        background-color: #fff;
+        border-radius: 4px;
+        font-size:14pt;
+    }
+    #remoteplay_controls .section {
+        padding:10px 20px 10px 20px;
+        display:flex;
+        flex-direction: row;
+        
+    }
+    #remoteplay_controls input {
+        margin-right:8px;
+    }
+    #remoteplay_controls .button {
+        background-color: #ccc;
+        border: 1px solid #000;
+        padding:2px 6px 2px 6px;
+        border-radius: 2px;
+    }
+    #remoteplay_controls .button:hover {
+        background-color: #ff0;
+        cursor: pointer;
     }
     
     -->
@@ -1026,7 +1062,7 @@
     
     
     <div id="p8_frame_0" style="max-width:800px; max-height:800px; margin:auto;"> <!-- double function: limit size, and display only this div for touch devices -->
-    <div id="p8_frame" style="display:flex; width:100%; max-width:95vw; height:100vw; max-height:95vh; margin:auto;">
+    <div id="p8_frame" style="display:flex; flex-direction: column; width:100%; max-width:95vw; height:100vw; max-height:95vh; margin:auto;">
     
         <div id="p8_menu_buttons_touch" style="position:absolute; width:100%; z-index:10; left:0px;">
             <div class="p8_menu_button" id="p8b_full"  style="float:left;margin-left:10px" onClick="p8_give_focus(); p8_request_fullscreen();"></div>
@@ -1086,6 +1122,16 @@
             </div> <!--p8_playarea -->
     
         </div> <!-- p8_container -->
+        <div id="remoteplay_container"></div>
+        <div id="remoteplay_controls">
+            <div class="section">
+                <div class="button" id="host">Host</div>
+            </div>
+            <div class="section">
+                <input type="text" id="peerid" />
+                <div class="button" id="join">Join</div>
+            </div>
+        </div>
     
     </div> <!-- p8_frame -->
     </div> <!-- p8_frame_0 size limit -->
@@ -1104,7 +1150,7 @@
     
         if (p8_autoplay)
         {
-            var temp_context = new AudioContext();
+            /*var temp_context = new AudioContext();
             temp_context.onstatechange = function ()
             {
                 if (temp_context.state=='running')
@@ -1112,7 +1158,8 @@
                     p8_run_cart();
                     temp_context.close();
                 }
-            };
+            };*/
+            p8_run_cart();
         }
     
         // pointer lock request needs to be inside a canvas interaction event
@@ -1128,9 +1175,6 @@
     </script>
     <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
     <script src = "stream.js"></script>
-    <input type="button" id="host" value="host" />
-    <input type="text" id="peerid" />
-    <input type="button" id="join" value="join" />
     
     <!-- Add content below the cart here -->
     
