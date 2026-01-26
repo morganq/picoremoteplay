@@ -79,10 +79,11 @@ window.onload = function() {
     peer.on('open', function(id) {
         console.log(id);
         var search = window.location.search
-        if(search.startsWith("?join=")) {
-            join(peer, search.substring(6))
+        var join_var = getQueryVariable("join")
+        if(join_var) {
+            join(peer, join_var)
         }
-    });    
+    });
     
 
     document.getElementById('join').onclick = function()
